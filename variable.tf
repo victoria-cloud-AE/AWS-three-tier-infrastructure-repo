@@ -77,38 +77,7 @@ variable "label_one" {
   default     = "system"
 }
 
-variable "zone_name" {
-  description = "Name of the DNS zone"
-  type        = string
-  default     = "example.com"
-}
 
-variable "domain-name" {
-  description = "Domain name to be created"
-  type        = string
-  default     = "myapp.example.com"
-}
-
-variable "namecheap_api_user" {
-  description = "Namecheap API user"
-  type        = string
-  default     = "smartobi"
-}
-variable "namecheap_api_key" {
-  description = "Namecheap API key"
-  type        = string
-  default     = "a3ca57241b794d44b0fc3387ca9b62a9"
-}
-variable "namecheap_username" {
-  description = "Namecheap username"
-  type        = string
-  default     = "smartobi"
-}
-variable "namecheap_client_ip" {
-  description = "Client IP for Namecheap API access"
-  type        = string
-  default     = "3.101.24.8" # Replace with your actual client IP
-}
 
 #===========
 
@@ -164,5 +133,5 @@ variable "repository_name" {
 variable "email" {
   description = "Email address for notifications and certificates"
   type        = string
-  default     = "support@digitalwitchng.online"
+  default     = "victoriaenuma@gmail.com"
 }
