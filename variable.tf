@@ -135,3 +135,10 @@ variable "email" {
   type        = string
   default     = "victoriaenuma@gmail.com"
 }
+
+variable "domain_name" {
+  description = "domain"
+  type        = string
+  default     = "enumavictoria.site"
+  
+}
