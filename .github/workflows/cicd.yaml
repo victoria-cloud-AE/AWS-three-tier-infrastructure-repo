@@ -40,8 +40,8 @@ jobs:
       - name: Terraform Plan
         run: terraform plan
 
-      # - name: Terraform Apply
-      #   run: terraform apply -auto-approve
+      - name: Terraform Apply
+        run: terraform apply -auto-approve
 
       # - name: Update kubeconfig
       #   run: aws eks update-kubeconfig --name ${{ vars.EKS_CLUSTER_NAME }} --region ${{ secrets.AWS_REGION }}
