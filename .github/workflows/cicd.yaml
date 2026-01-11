@@ -135,44 +135,44 @@ jobs:
         run: aws eks list-clusters --region $AWS_REGION
 
 
-      # # 🔹 Now cluster exists
+      # 🔹 Now cluster exists
 
-      # - name: Update kubeconfig
-      #   run: aws eks update-kubeconfig --name $EKS_CLUSTER_NAME --region $AWS_REGION
+      - name: Update kubeconfig
+        run: aws eks update-kubeconfig --name production-eks-cluster --region $AWS_REGION
 
-      # - name: Verify cluster access
-      #   run: kubectl get nodes
+      - name: Verify cluster access
+        run: kubectl get nodes
 
-      # # 🔹 Helm Add-ons
+      # 🔹 Helm Add-ons
 
-      # - name: Deploy NGINX Ingress
-      #   run: |
-      #     helm repo add ingress-nginx https://kubernetes.github.io/ingress-nginx
-      #     helm repo update
-      #     helm upgrade --install nginx-ingress ingress-nginx/ingress-nginx \
-      #       --namespace ingress-nginx --create-namespace \
-      #       -f ./module-eks/nginx-ingress-values.yaml
+      - name: Deploy NGINX Ingress
+        run: |
+          helm repo add ingress-nginx https://kubernetes.github.io/ingress-nginx
+          helm repo update
+          helm upgrade --install nginx-ingress ingress-nginx/ingress-nginx \
+            --namespace ingress-nginx --create-namespace \
+            -f ./module-eks/nginx-ingress-values.yaml
 
-      # - name: Deploy Cert-Manager
-      #   run: |
-      #     helm repo add jetstack https://charts.jetstack.io
-      #     helm repo update
-      #     helm upgrade --install cert-manager jetstack/cert-manager \
-      #       --namespace cert-manager --create-namespace \
-      #       --set installCRDs=true
+      - name: Deploy Cert-Manager
+        run: |
+          helm repo add jetstack https://charts.jetstack.io
+          helm repo update
+          helm upgrade --install cert-manager jetstack/cert-manager \
+            --namespace cert-manager --create-namespace \
+            --set installCRDs=true
 
-      # - name: Deploy ArgoCD
-      #   run: |
-      #     helm repo add argo https://argoproj.github.io/argo-helm
-      #     helm repo update
-      #     helm upgrade --install argocd argo/argo-cd \
-      #       --namespace argocd --create-namespace \
-      #       -f ./module-eks/argocd-values.yaml
+      - name: Deploy ArgoCD
+        run: |
+          helm repo add argo https://argoproj.github.io/argo-helm
+          helm repo update
+          helm upgrade --install argocd argo/argo-cd \
+            --namespace argocd --create-namespace \
+            -f ./module-eks/argocd-values.yaml
 
-      # # 🔹 Kubernetes manifests
+      # 🔹 Kubernetes manifests
 
-      # - name: Deploy ClusterIssuer
-      #   run: kubectl apply -f ClusterIssuer.yaml
+      - name: Deploy ClusterIssuer
+        run: kubectl apply -f ClusterIssuer.yaml
 
-      # - name: Deploy ArgoCD Ingress
-      #   run: kubectl apply -f ingress-argocd.yaml -n argocd
+      - name: Deploy ArgoCD Ingress
+        run: kubectl apply -f ingress-argocd.yaml -n argocd
