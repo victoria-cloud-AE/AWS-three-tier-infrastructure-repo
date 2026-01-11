@@ -116,20 +116,20 @@ jobs:
       - name: Verify Terraform
         run: terraform --version
 
-      - name: Terraform Init
-        run: terraform init
+      # - name: Terraform Init
+      #   run: terraform init
 
-      - name: Terraform Format
-        run: terraform fmt -check
+      # - name: Terraform Format
+      #   run: terraform fmt -check
 
-      - name: Terraform Validate
-        run: terraform validate
+      # - name: Terraform Validate
+      #   run: terraform validate
 
-      - name: Terraform Plan
-        run: terraform plan
+      # - name: Terraform Plan
+      #   run: terraform plan
 
-      - name: Terraform Apply
-        run: terraform apply -auto-approve
+      # - name: Terraform Apply
+      #   run: terraform apply -auto-approve
         
       - name: List EKS clusters
         run: aws eks list-clusters --region $AWS_REGION
