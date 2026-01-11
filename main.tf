@@ -29,7 +29,7 @@ module "eks-deployment" {
     private_subnet_ids = module.vpc-deployment.private_subnet_ids
     cluster_name = var.cluster_name
     repository_name = var.repository_name
-    domain-name = var.domain_name
+    domain_name = var.domain_name
     email = var.email
   
 }

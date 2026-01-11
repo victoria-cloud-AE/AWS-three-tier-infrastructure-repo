@@ -86,12 +86,26 @@ variable "private_subnet_ids" {
   type = list(string)
   description = "List of private subnet IDs"
 }
+
 variable "cluster_name" {
+  description = "Name of the EKS cluster"
+  type        = string
 }
 
 variable "repository_name" {
-  
+  description = "Name of the repository"
+  type        = string
 }
 
-variable "domain-name" {}
-variable "email" {}
+
+variable "email" {
+  description = "Email address for notifications and certificates"
+  type        = string
+  default     = "victoriaenuma@gmail.com"
+}
+
+variable "domain_name" {
+  description = "Domain name to be created"
+  type        = string
+  default     = "myapp.example.com"
+}
