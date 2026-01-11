@@ -137,8 +137,7 @@ variable "email" {
 }
 
 variable "domain_name" {
-  description = "domain"
+  description = "Domain name to be created"
   type        = string
-  default     = "enumavictoria.site"
-
+  default     = "myapp.example.com"
 }
