@@ -134,7 +134,7 @@ jobs:
       # 🔹 Now cluster exists
 
       - name: Update kubeconfig
-        run: aws eks update-kubeconfig --name ${{ vars.EKS_CLUSTER_NAME }} --region ${{ secrets.AWS_REGION }}
+        run: aws eks update-kubeconfig --name $EKS_CLUSTER_NAME --region $AWS_REGION
 
       - name: Verify cluster access
         run: kubectl get nodes
