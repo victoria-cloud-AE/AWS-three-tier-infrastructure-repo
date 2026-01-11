@@ -1,92 +1,4 @@
-name: Deploy AWS Infrastructure and Kubernetes
-
-on:
-  push:
-    branches:
-      - main
-
-permissions:
-  contents: write
-  id-token: write
-
-jobs:
-  deploy:
-    runs-on: self-hosted
-    env:
-      AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-      AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-      AWS_REGION: ${{ secrets.AWS_REGION }}
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v3
-
-      - name: Setup Terraform
-        uses: hashicorp/setup-terraform@v2
-        with:
-          terraform_version: 1.7.6
-
-      - name: Terraform Init
-        run: terraform init
-
-      - name: Terraform Format Check
-        run: terraform fmt -check
-
-      - name: Terraform Validate
-        run: terraform validate
-
-      - name: Terraform Plan
-        run: terraform plan -out=tfplan
-
-      - name: Terraform Apply
-        run: terraform apply -auto-approve tfplan
-
-      - name: Install kubectl
-        run: |
-          curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
-          chmod +x ./kubectl
-          sudo mv ./kubectl /usr/local/bin/kubectl
-
-      - name: Configure kubeconfig for EKS
-        run: |
-          aws eks update-kubeconfig \
-            --region ${{ secrets.AWS_REGION }} \
-            --name $(terraform output -raw eks_cluster_name)
-
-      - name: Install Helm
-        run: |
-          curl https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3 | bash
-
-      - name: Deploy NGINX Ingress via Helm
-        run: |
-          helm repo add ingress-nginx https://kubernetes.github.io/ingress-nginx
-          helm repo update
-          helm upgrade --install nginx-ingress ingress-nginx/ingress-nginx \
-            --namespace ingress-nginx --create-namespace \
-            -f module-eks/nginx-ingress-values.yaml
-
-      - name: Deploy Cert-Manager via Helm
-        run: |
-          helm repo add jetstack https://charts.jetstack.io
-          helm repo update
-          helm upgrade --install cert-manager jetstack/cert-manager \
-            --namespace cert-manager --create-namespace \
-            --set installCRDs=true
-
-      - name: Deploy ArgoCD via Helm
-        run: |
-          helm repo add argo https://argoproj.github.io/argo-helm
-          helm repo update
-          helm upgrade --install argocd argo/argo-cd \
-            --namespace argocd --create-namespace \
-            -f module-eks/argocd-values.yaml
-
-
-
-
-
-
-
-# name: Deploy Infrastructure and App
+# name: Deploy AWS Infrastructure and Kubernetes
 
 # on:
 #   push:
@@ -94,48 +6,136 @@ jobs:
 #       - main
 
 # permissions:
-#   contents: read
+#   contents: write
 #   id-token: write
 
 # jobs:
 #   deploy:
 #     runs-on: self-hosted
-
 #     env:
 #       AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
 #       AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
 #       AWS_REGION: ${{ secrets.AWS_REGION }}
-
 #     steps:
-#       - name: Checkout code
-#         uses: actions/checkout@v4
+#       - name: Checkout repository
+#         uses: actions/checkout@v3
 
-#       - name: Verify AWS CLI
-#         run: aws --version
-
-#       - name: Verify Terraform
-#         run: terraform --version
+#       - name: Setup Terraform
+#         uses: hashicorp/setup-terraform@v2
+#         with:
+#           terraform_version: 1.7.6
 
 #       - name: Terraform Init
 #         run: terraform init
 
-#       - name: Terraform Format
+#       - name: Terraform Format Check
 #         run: terraform fmt -check
 
 #       - name: Terraform Validate
 #         run: terraform validate
 
 #       - name: Terraform Plan
-#         run: terraform plan
+#         run: terraform plan -out=tfplan
 
 #       - name: Terraform Apply
-#         run: terraform apply -auto-approve
+#         run: terraform apply -auto-approve tfplan
 
-      # - name: Update kubeconfig
-      #   run: aws eks update-kubeconfig --name ${{ vars.EKS_CLUSTER_NAME }} --region ${{ secrets.AWS_REGION }}
+#       - name: Install kubectl
+#         run: |
+#           curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
+#           chmod +x ./kubectl
+#           sudo mv ./kubectl /usr/local/bin/kubectl
 
-      # - name: Deploy ClusterIssuer
-      #   run: kubectl apply -f ClusterIssuer.yaml
+#       - name: Configure kubeconfig for EKS
+#         run: |
+#           aws eks update-kubeconfig \
+#             --region ${{ secrets.AWS_REGION }} \
+#             --name $(terraform output -raw eks_cluster_name)
 
-      # - name: Deploy ArgoCD Ingress
-      #   run: kubectl apply -f ingress-argocd.yaml -n argocd
+#       - name: Install Helm
+#         run: |
+#           curl https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3 | bash
+
+#       - name: Deploy NGINX Ingress via Helm
+#         run: |
+#           helm repo add ingress-nginx https://kubernetes.github.io/ingress-nginx
+#           helm repo update
+#           helm upgrade --install nginx-ingress ingress-nginx/ingress-nginx \
+#             --namespace ingress-nginx --create-namespace \
+#             -f module-eks/nginx-ingress-values.yaml
+
+#       - name: Deploy Cert-Manager via Helm
+#         run: |
+#           helm repo add jetstack https://charts.jetstack.io
+#           helm repo update
+#           helm upgrade --install cert-manager jetstack/cert-manager \
+#             --namespace cert-manager --create-namespace \
+#             --set installCRDs=true
+
+#       - name: Deploy ArgoCD via Helm
+#         run: |
+#           helm repo add argo https://argoproj.github.io/argo-helm
+#           helm repo update
+#           helm upgrade --install argocd argo/argo-cd \
+#             --namespace argocd --create-namespace \
+#             -f module-eks/argocd-values.yaml
+
+
+
+
+
+
+
+name: Deploy Infrastructure and App
+
+on:
+  push:
+    branches:
+      - main
+
+permissions:
+  contents: read
+  id-token: write
+
+jobs:
+  deploy:
+    runs-on: self-hosted
+
+    env:
+      AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+      AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+      AWS_REGION: ${{ secrets.AWS_REGION }}
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Verify AWS CLI
+        run: aws --version
+
+      - name: Verify Terraform
+        run: terraform --version
+
+      - name: Terraform Init
+        run: terraform init
+
+      - name: Terraform Format
+        run: terraform fmt -check
+
+      - name: Terraform Validate
+        run: terraform validate
+
+      - name: Terraform Plan
+        run: terraform plan
+
+      - name: Terraform Apply
+        run: terraform apply -auto-approve
+
+      - name: Update kubeconfig
+        run: aws eks update-kubeconfig --name ${{ vars.EKS_CLUSTER_NAME }} --region ${{ secrets.AWS_REGION }}
+
+      - name: Deploy ClusterIssuer
+        run: kubectl apply -f ClusterIssuer.yaml
+
+      - name: Deploy ArgoCD Ingress
+        run: kubectl apply -f ingress-argocd.yaml -n argocd
