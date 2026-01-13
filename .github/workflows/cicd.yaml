@@ -116,8 +116,8 @@ jobs:
       # - name: Verify Terraform
       #   run: terraform --version
 
-      # - name: Terraform Init
-      #   run: terraform init
+      - name: Terraform Init
+        run: terraform init
 
       # - name: Terraform Format
       #   run: terraform fmt -check
