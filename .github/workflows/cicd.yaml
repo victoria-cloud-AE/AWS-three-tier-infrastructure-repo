@@ -14,11 +14,6 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v3
 
-      - name: Set Terraform version
-        uses: hashicorp/setup-terraform@v2
-        with:
-          terraform_version: 1.14.3  # <-- Use the same version you used to create infra
-
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v2
         with:
